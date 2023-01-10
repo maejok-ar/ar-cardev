@@ -1,6 +1,7 @@
 fx_version 'cerulean'
 game 'gta5'
 
+author 'MAEJOK <https://github.com/maej20>'
 description 'Car Dev Menu'
 version '1.0.0'
 
