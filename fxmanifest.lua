@@ -5,8 +5,6 @@ author 'MAEJOK <https://github.com/maej20>'
 description 'Car Dev Menu'
 version '1.0.0'
 
-lua54 'yes'
-
 client_scripts {
     '@menuv/menuv.lua',
     'config.lua',
@@ -23,3 +21,5 @@ dependencies {
     'menuv',
     'qb-vehiclekeys'
 }
+
+lua54 'yes'
