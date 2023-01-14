@@ -6,6 +6,7 @@ local spawnVehiclesModded = false
 local manSpawnInput = false
 local spawnedVehs = {}
 local privateBucket = nil
+local CurrentBucket = 'off'
 
 
 -- MENUS
@@ -143,9 +144,9 @@ sld_Bucket:On('select', function(item, value)
         QBCore.Functions.Notify('You have entered a private bucket', 'success', 3000)
 
     elseif value == 'off' then
-        isDevMode = false
         ExitBuckets()
-        QBCore.Functions.Notify('No longer in Car Dev Mode', 'success', 3000)
+        isDevMode = false
+        CurrentBucket = 'off'
     end
 
     btn_VehicleSpawnerMenu.Disabled = not isDevMode
@@ -352,6 +353,15 @@ function tablelength(T)
     return count
 end
 
+ShowBucketInfo = function()
+    Citizen.CreateThread(function()
+        repeat
+            local msg = 'Current Bucket: ' .. string.upper(CurrentBucket)
+            ShowDebugText(msg, 0)
+            Citizen.Wait(5)
+        until not isDevMode
+    end)
+end
 
 SpawnCar = function(car)
     local ped = PlayerPedId()
@@ -391,20 +401,22 @@ DeleteSpawnedVehs = function()
     end
 end
 
-ExitBuckets = function(name)
+ExitBuckets = function()
     privateBucket = nil
-    DeleteSpawnedVehs()
+    if not CurrentBucket == 'off' then DeleteSpawnedVehs() end
     TriggerServerEvent('tu-cardevmenu:server:setNamed', 0)
 end
 
 EnterBucket = function(name)
-    ExitBuckets()
+    ExitBuckets(name)
     if not name then
         local privateBucket = tostring(QBCore.Shared.RandomStr(2) .. QBCore.Shared.RandomInt(3) .. QBCore.Shared.RandomStr(1) .. QBCore.Shared.RandomInt(2) .. QBCore.Shared.RandomStr(3) .. QBCore.Shared.RandomInt(4))
         TriggerServerEvent('tu-cardevmenu:server:setNamed', privateBucket)
     else
         TriggerServerEvent('tu-cardevmenu:server:setNamed', tostring(name))
     end
+    CurrentBucket = lib.callback('tu-cardevmenu:callback:getBucket', false)
+    ShowBucketInfo()
 end
 
 local performanceModIndices = { 11, 12, 13, 15, 16 }
@@ -434,4 +446,25 @@ RegisterNetEvent('tu-cardevmenu:client:openMenu', function(data)
     -- MenuV:OpenMenu(menu_Main)
     menu_Main:Open()
 end)
+
+
+-------------  DEBUGGING  --------------
+local n = 0
+function ShowDebugText(text, margin)
+    text = text or "No Data"
+    margin = 0.12*margin or 0
+
+    SetTextFont(0)
+    SetTextProportional(1)
+    SetTextScale(0.0, 0.3)
+    SetTextColour(255, 50, 50, 255)
+    SetTextDropshadow(0, 0, 0, 0, 255)
+    SetTextEdge(1, 0, 0, 0, 255)
+    SetTextDropShadow()
+    SetTextOutline()
+    SetTextEntry("STRING")
+    AddTextComponentString(text)
+    DrawText(0.005, 0.06+margin)
+end
+
 

@@ -1,5 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local instances = {}
+local Namedinstances = {}
 
 
 QBCore.Commands.Add('cardev', 'Open Car Dev Menu (admin only)', {}, false, function(source, args)
@@ -56,8 +57,6 @@ AddEventHandler("tu-cardevmenu:server:set", function(set)
     )
     -- print('[INSTANCES] Instances now looks like this: ', json.encode(instances))
 end)
-
-Namedinstances = {}
 
 
 RegisterServerEvent("tu-cardevmenu:server:setNamed")
@@ -116,5 +115,11 @@ AddEventHandler("tu-cardevmenu:server:setNamed", function(setName)
         src --[[ string ]],
         instanceSource
     )
-    -- print('[INSTANCES] Named Instances now look like this: ', json.encode(Namedinstances))
+    print('[INSTANCES] Named Instances now look like this: ', json.encode(Namedinstances))
+end)
+
+lib.callback.register('tu-cardevmenu:callback:getBucket', function(source)
+    local routing_bucket = GetPlayerRoutingBucket(source)
+    local bucket = Namedinstances[routing_bucket]
+    return bucket["name"]
 end)
