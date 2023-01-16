@@ -1,6 +1,6 @@
 Config = {
     permissionLevel = 'god',  -- Access level needed to run /cardev command
-    enableHotkey = true,
+    enableHotkey = true
 }
 
 Config.Menu = {
